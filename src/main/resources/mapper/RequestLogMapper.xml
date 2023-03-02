@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.internal.requestlogger.mapper.RequestLogMapper">
+
+    <insert id="insert" parameterType="com.internal.requestlogger.model.RequestLog">
+        INSERT INTO request_log(
+            method,
+            url,
+            content_type
+            <if test="content != null and content != ''">
+                , content
+            </if>
+        )
+        VALUES (
+            #{method},
+            #{url},
+            #{contentType}
+            <if test="content != null and content != ''">
+                , #{content}
+            </if>
+        )
+    </insert>
+
+    <select id="queryAllWithFilter" resultType="com.internal.requestlogger.model.RequestLog">
+        SELECT id, method, url, content_type contentType, content
+        FROM request_log
+        <where>
+            <if test="method != null and method != ''">
+                method = #{method}
+            </if>
+            <if test="url != null and url != ''">
+                AND url LIKE CONCAT(#{url}, "%")
+            </if>
+            <if test="contentType != null and contentType != ''">
+                AND content_type = #{contentType}
+            </if>
+            <if test="content != null and content != ''">
+                AND content LIKE CONCAT("%", #{content}, "%")
+            </if>
+        </where>
+    </select>
+
+</mapper>
